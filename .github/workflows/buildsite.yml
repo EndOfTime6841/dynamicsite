@@ -1,0 +1,39 @@
+# .github/workflows/deploy.yml
+name: Build and Deploy JSX Site
+
+on:
+  workflow_dispatch:
+    branches: 
+      - main
+  push:
+    branches:
+      - main # Triggers the workflow every time you push to the main branch
+
+permissions:
+  contents: write # Allows GitHub Actions to write files to the gh-pages branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Install Project Dependencies
+        run: npm install
+
+      - name: Build Project Build Artifacts
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist # The folder your bundler (like Vite) generates
+          branch: gh-pages # The deployment target branch
