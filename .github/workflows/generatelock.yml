@@ -1,0 +1,27 @@
+name: Generate Lockfile
+
+on:
+  workflow_dispatch: # Allows you to tap a button on mobile to run this
+
+jobs:
+  create-lockfile:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Grants permission to commit the file back to your repo
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate Lockfile
+        run: npm install --package-lock-only # Generates the file without downloading everything
+
+      - name: Commit Lockfile Back to Repo
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: auto-generate package-lock.json from mobile"
+          file_pattern: 'package-lock.json'
